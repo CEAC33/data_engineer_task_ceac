@@ -109,4 +109,4 @@ In the tab where you have open the db, copy an paste each query of "Step_5_data_
 
 # Step 6 - sql queries with unit tests
 
-
+In the tab where you have open pyspark, copy an paste each query of "Step_6_sql_queries_with_unit_tests.py"
