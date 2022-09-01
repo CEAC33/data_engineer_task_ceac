@@ -83,7 +83,7 @@ just shell_db
 
 And run the schema that is in the file "sql/Step_1_db_schema_script.sql"
 
-# Step 2 & 3 - ETL and gender detection.py
+# Step 2 & 3 - ETL and gender detection - etl/etl.py
 In a new tab
 
 ```
@@ -94,15 +94,15 @@ just run_pyspark
 just run_etl
 ```
 
-# Step 4 - validation scripts
+# Step 4 - validation scripts - Step_4_validation_scripts.sql
 
 In the tab where you have open the db, copy an paste the contents of "Step_4_validation_scripts.sql"
 
-# Step 5 - data analysis scripts
+# Step 5 - data analysis scripts - Step_5_data_analysis_scripts.sql
 
 In the tab where you have open the db, copy an paste each query of "Step_5_data_analysis_scripts.sql"
 
-# Step 6 - sql queries with unit tests
+# Step 6 - sql queries with unit tests - tests/test_etl.py
 
 ```
 just tests
