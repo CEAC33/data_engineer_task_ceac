@@ -1,23 +1,17 @@
-pyspark_image_name := 'pyspark-example:dev'
-db_image_name := 'postgres:12-alpine'
-postgres_user := 'root'
-postgres_password := 'secret'
-postgres_host := 'docker_postgres_with_data_postgres_1'
-postgres_port := '5432'
-postgres_db_name := 'netflix_titles'
-path_in_your_local := '/Users/macbook/Documents/LinkFire/data_engineer_task/'
+set dotenv-load := true
+PATH_IN_YOUR_LOCAL := '/Users/macbook/Documents/LinkFire/data_engineer_task/'
 
 build:
-    docker build -t {{db_image_name}} .
-    docker build -t {{pyspark_image_name}} .
+    docker build -t $DB_IMAGE_NAME .
+    docker build -t $PYSPARK_IMAGE_NAME .
 
 run_db:
     docker pull postgres:12-alpine
-    docker run --name postgres_db -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:12-alpine
+    docker run --name postgres_db -e POSTGRES_USER=$POSTGRES_USER -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -p $POSTGRES_PORT:$POSTGRES_PORT -d postgres:12-alpine
 
 run_pyspark:
-    docker run --detach -it --name pyspark_notebook_1 --network host \
-    {{pyspark_image_name}} /opt/spark/bin/pyspark --packages com.amazonaws:aws-java-sdk-bundle:1.11.375,org.apache.hadoop:hadoop-aws:3.2.0 
+    docker run --env-file .env --detach -it --name pyspark_notebook_1 --network host \
+    $PYSPARK_IMAGE_NAME /opt/spark/bin/pyspark 
 
 start:
     docker start postgres_db
@@ -27,10 +21,13 @@ shell_db:
     docker exec -it postgres_db psql -U root
 
 copy_csv:
-    docker cp {{path_in_your_local}}netflix_titles.csv pyspark_notebook_1:/opt/application/netflix_titles.csv
+    docker cp {{PATH_IN_YOUR_LOCAL}}netflix_titles.csv pyspark_notebook_1:/opt/application/netflix_titles.csv
 
 run_etl:
-    docker exec -it pyspark_notebook_1 /opt/spark/bin/spark-submit "Step_2_&_3_ETL_and_gender_detection.py" --packages com.amazonaws:aws-java-sdk-bundle:1.11.375,org.apache.hadoop:hadoop-aws:3.2.0 
+    docker exec -it pyspark_notebook_1 python run_etl.py
 
-shell:
-    docker exec -it pyspark_notebook_1 /opt/spark/bin/pyspark --packages com.amazonaws:aws-java-sdk-bundle:1.11.375,org.apache.hadoop:hadoop-aws:3.2.0 
+pyspark_shell:
+    docker exec -it pyspark_notebook_1 /opt/spark/bin/pyspark
+
+tests:
+    docker exec -it pyspark_notebook_1 python -m unittest -v

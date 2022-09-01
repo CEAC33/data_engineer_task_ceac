@@ -9,10 +9,11 @@ RUN mv postgresql-42.2.5.jar /opt/spark/jars
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
-COPY main.py .
 COPY netflix_titles.csv .
-COPY "Step_1_db_schema_script.sql" .
-COPY "Step_2_&_3_ETL_and_gender_detection.py" .
-COPY "Step_4_validation_scripts.sql" .
-COPY "Step_5_data_analysis_scripts.sql" .
-COPY "Step_6_sql_queries_with_unit_tests.py" .
+COPY main.py .
+COPY run_etl.py .
+ADD etl /opt/application/etl
+ADD sql /opt/application/sql
+ADD tests /opt/application/tests
+
+RUN PYTHONPATH=. python main.py
